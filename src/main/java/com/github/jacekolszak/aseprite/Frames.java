@@ -4,4 +4,6 @@ public interface Frames {
 
     int count();
 
+    Frame frame(int number);
+
 }

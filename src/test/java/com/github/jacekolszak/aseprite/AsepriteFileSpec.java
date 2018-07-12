@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.io.File;
 import java.net.URL;
+import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 
@@ -74,6 +75,17 @@ final class AsepriteFileSpec {
         Frames frames = file.frames();
         assertThat(frames).isNotNull();
         assertThat(frames.count()).isEqualTo(1);
+    }
+
+    @Test
+    void should_return_first_frame() {
+        URL url = AsepriteFileSpec.class.getResource("/file.aseprite");
+        AsepriteFile file = factory.asepriteFile(url);
+        file.load();
+        Frames frames = file.frames();
+        Frame frame = frames.frame(1);
+        assertThat(frame).isNotNull();
+        assertThat(frame.duration()).isEqualTo(Duration.ofMillis(100));
     }
 
 

@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 
 public final class ASE {
 
+    private static final int FIRST_FRAME_OFFSET = 128;
     private final ByteBuffer buffer;
 
     public ASE(byte[] bytes) {
@@ -15,8 +16,13 @@ public final class ASE {
         return new Header();
     }
 
-    public Frames frames() {
-        return null;
+    Frame frame(int number) {
+        int offset = FIRST_FRAME_OFFSET;
+        for (int i = 1; i < number; i++) {
+            int frameBytes = (int) new Frame(offset).bytes();
+            offset += frameBytes;
+        }
+        return new Frame(offset);
     }
 
     /**
@@ -88,7 +94,26 @@ public final class ASE {
 
     }
 
-    public class Frames {
+    class Frame {
+
+        private final int offset;
+
+        Frame(int offset) {
+            this.offset = offset;
+        }
+
+        long bytes() {
+            return dword(offset);
+        }
+
+        int numberOfChunks() {
+            return word(offset + 6);
+        }
+
+        int duration() {
+            return word(offset + 8);
+        }
 
     }
+
 }

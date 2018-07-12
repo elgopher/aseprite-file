@@ -35,6 +35,6 @@ final class AsepriteFile {
     }
 
     public Frames frames() {
-        return new FramesImpl(ase.header());
+        return new FramesImpl(ase);
     }
 }
