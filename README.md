@@ -5,7 +5,7 @@ Load Aseprite files directly in Java. No need to export spritesheets. Access fro
 ## Some possible use cases
 
 * writing custom exporters in Java and all JVM langauges - Groovy, Kotlin, Scala
-* directly manipulate Aseprite files 
+* directly manipulate Aseprite files (in the future ;) )
 
 # Aseprite file format
 
