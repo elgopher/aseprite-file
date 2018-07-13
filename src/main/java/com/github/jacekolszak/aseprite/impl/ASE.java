@@ -207,13 +207,6 @@ public final class ASE {
                 return type() == 0x2022;
             }
 
-            byte[] data() {
-                int size = (int) size();
-                byte[] bytes = new byte[size];
-                buffer.get(bytes, 6, size);
-                return bytes;
-            }
-
             PaletteChunk palette() {
                 return new PaletteChunk(offset + 6);
             }

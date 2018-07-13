@@ -42,7 +42,7 @@ final class AsepriteFileSpec {
 
     @Test
     void create_aseprite_from_bytes() {
-        AsepriteFile file = factory.asepriteFile(new byte[]  {});
+        AsepriteFile file = factory.asepriteFile(new byte[]{});
         assertThat(file.loaded()).isFalse();
     }
 
@@ -134,7 +134,5 @@ final class AsepriteFileSpec {
         assertThat(color31.blue()).isEqualTo(48);
         assertThat(color31.alpha()).isEqualTo(174);
     }
-
-
 
 }
