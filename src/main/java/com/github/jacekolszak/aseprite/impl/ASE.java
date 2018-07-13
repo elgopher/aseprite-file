@@ -311,6 +311,10 @@ public final class ASE {
                     return (flags() & 1) == 1;
                 }
 
+                boolean editable() {
+                    return (flags() & 2) == 2;
+                }
+
                 int type() {
                     return word(offset + 2);
                 }

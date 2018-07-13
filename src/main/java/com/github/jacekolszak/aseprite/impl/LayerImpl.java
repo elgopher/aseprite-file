@@ -1,15 +1,25 @@
 package com.github.jacekolszak.aseprite.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.github.jacekolszak.aseprite.Layer;
 
 class LayerImpl implements Layer {
 
     private final boolean visible;
+    private final boolean readonly;
+    private final boolean group;
     private final String name;
+    private final List<LayerImpl> children;
 
-    LayerImpl(boolean visible, String name) {
+    LayerImpl(boolean visible, boolean readonly, boolean group, String name) {
         this.visible = visible;
+        this.readonly = readonly;
+        this.group = group;
         this.name = name;
+        this.children = new ArrayList<>();
     }
 
     @Override
@@ -20,5 +30,33 @@ class LayerImpl implements Layer {
     @Override
     public boolean visible() {
         return visible;
+    }
+
+    @Override
+    public boolean readonly() {
+        return readonly;
+    }
+
+    @Override
+    public boolean group() {
+        return group;
+    }
+
+    void addChild(LayerImpl layer, int level) {
+        if (level == 0) {
+            this.children.add(layer);
+        } else {
+            LayerImpl lastChild = this.children.get(children.size() - 1);
+            lastChild.addChild(layer, level - 1);
+        }
+    }
+
+    @Override
+    public List<Layer> children() {
+        return Collections.unmodifiableList(children);
+    }
+
+    List<LayerImpl> _children() {
+        return Collections.unmodifiableList(children);
     }
 }

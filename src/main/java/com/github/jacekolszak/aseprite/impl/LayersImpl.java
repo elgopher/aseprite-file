@@ -1,6 +1,5 @@
 package com.github.jacekolszak.aseprite.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.github.jacekolszak.aseprite.Layer;
@@ -29,18 +28,20 @@ public class LayersImpl implements Layers {
 
     static class Layers {
 
-        private List<Layer> children = new ArrayList<>();
+        private LayerImpl topLayer = new LayerImpl(false, false, false, "main");
 
         void merge(LayerChunk chunk) {
-            children.add(new LayerImpl(chunk.visible(), chunk.name()));
+            LayerImpl layer = new LayerImpl(chunk.visible(), !chunk.editable(), chunk.groupLayer(), chunk.name());
+            topLayer.addChild(layer, chunk.childLevel());
         }
 
         void merge(Layers layers) {
-            children.addAll(layers.children);
+            topLayer._children()
+                    .forEach(layer -> layers.topLayer.addChild(layer, 0));
         }
 
         List<Layer> children() {
-            return children;
+            return topLayer.children();
         }
 
     }

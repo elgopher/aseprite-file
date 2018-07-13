@@ -147,15 +147,40 @@ final class AsepriteFileSpec {
         Layers layers = file.layers();
         assertThat(layers).isNotNull();
         List<Layer> children = layers.children();
-        Layer topLayer = children.get(2);
-        assertThat(topLayer.name()).isEqualTo("top-layer");
-        assertThat(topLayer.visible()).isEqualTo(true);
-        Layer hiddenLayer = children.get(1);
-        assertThat(hiddenLayer.name()).isEqualTo("hidden-layer");
-        assertThat(hiddenLayer.visible()).isEqualTo(false);
         Layer bottomLayer = children.get(0);
         assertThat(bottomLayer.name()).isEqualTo("bottom-layer");
         assertThat(bottomLayer.visible()).isEqualTo(true);
+        assertThat(bottomLayer.readonly()).isEqualTo(true);
+        Layer topLevelGroup = children.get(1);
+        assertThat(topLevelGroup.name()).isEqualTo("top-level-group");
+        assertThat(topLevelGroup.visible()).isEqualTo(true);
+        assertThat(topLevelGroup.readonly()).isEqualTo(false);
+        assertThat(topLevelGroup.group()).isEqualTo(true);
+        assertThat(topLevelGroup.children().size()).isEqualTo(1);
+        Layer nestedGroup = topLevelGroup.children().get(0);
+        assertThat(nestedGroup.name()).isEqualTo("nested-group");
+        assertThat(nestedGroup.visible()).isEqualTo(true);
+        assertThat(nestedGroup.readonly()).isEqualTo(false);
+        assertThat(nestedGroup.group()).isEqualTo(true);
+        assertThat(nestedGroup.children().size()).isEqualTo(2);
+        Layer layer2inGroup = nestedGroup.children().get(0);
+        assertThat(layer2inGroup.name()).isEqualTo("layer-2-in-group");
+        assertThat(layer2inGroup.visible()).isEqualTo(true);
+        assertThat(layer2inGroup.readonly()).isEqualTo(false);
+        assertThat(layer2inGroup.group()).isEqualTo(false);
+        Layer layer1inGroup = nestedGroup.children().get(1);
+        assertThat(layer1inGroup.name()).isEqualTo("layer-1-in-group");
+        assertThat(layer1inGroup.visible()).isEqualTo(true);
+        assertThat(layer1inGroup.readonly()).isEqualTo(false);
+        assertThat(layer1inGroup.group()).isEqualTo(false);
+        Layer hiddenLayer = children.get(2);
+        assertThat(hiddenLayer.name()).isEqualTo("hidden-layer");
+        assertThat(hiddenLayer.visible()).isEqualTo(false);
+        assertThat(hiddenLayer.readonly()).isEqualTo(false);
+        Layer topLayer = children.get(3);
+        assertThat(topLayer.name()).isEqualTo("top-layer");
+        assertThat(topLayer.visible()).isEqualTo(true);
+        assertThat(topLayer.readonly()).isEqualTo(false);
     }
 
 
