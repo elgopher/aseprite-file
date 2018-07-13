@@ -15,7 +15,7 @@
  */
 package com.github.jacekolszak.aseprite;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.net.URL;
@@ -126,62 +126,59 @@ final class AsepriteFileSpec {
         Palette palette = file.palette();
 
         Color color0 = palette.at(0);
-        assertThat(color0).isNotNull();
-        assertThat(color0.red()).isEqualTo(0);
-        assertThat(color0.green()).isEqualTo(0);
-        assertThat(color0.blue()).isEqualTo(0);
-        assertThat(color0.alpha()).isEqualTo(255);
+        assertThat(color0)
+                .matches(c -> c.red() == 0 && c.green() == 0 && c.blue() == 0 && c.alpha() == 255);
 
         Color color31 = palette.at(31);
-        assertThat(color31).isNotNull();
-        assertThat(color31.red()).isEqualTo(138);
-        assertThat(color31.green()).isEqualTo(111);
-        assertThat(color31.blue()).isEqualTo(48);
-        assertThat(color31.alpha()).isEqualTo(174);
+        assertThat(color31)
+                .matches(c -> c.red() == 138 && c.green() == 111 && c.blue() == 48 && c.alpha() == 174);
     }
 
-
     @Test
-    void should_return_layers_on_top_level() {
+    void should_return_layers_from_bottom_to_top() {
         AsepriteFile file = asepriteFile("/layers.aseprite");
         Layers layers = file.layers();
-        assertThat(layers).isNotNull();
         List<Layer> children = layers.children();
-        Layer bottomLayer = children.get(0);
-        assertThat(bottomLayer.name()).isEqualTo("bottom-layer");
-        assertThat(bottomLayer.visible()).isEqualTo(true);
-        assertThat(bottomLayer.readonly()).isEqualTo(true);
-        Layer topLevelGroup = children.get(1);
-        assertThat(topLevelGroup.name()).isEqualTo("top-level-group");
-        assertThat(topLevelGroup.visible()).isEqualTo(true);
-        assertThat(topLevelGroup.readonly()).isEqualTo(false);
-        assertThat(topLevelGroup.group()).isEqualTo(true);
+        assertThat(children)
+                .extracting(Layer::name)
+                .containsExactly("bottom-layer", "top-level-group", "hidden-layer", "top-layer");
+        assertThat(children)
+                .extracting(Layer::visible)
+                .containsExactly(true, true, false, true);
+        assertThat(children)
+                .extracting(Layer::group)
+                .containsExactly(false, true, false, false);
+        assertThat(children)
+                .extracting(Layer::readonly)
+                .containsExactly(true, false, false, false);
+
+    }
+
+    @Test
+    void should_return_nested_layers() {
+        AsepriteFile file = asepriteFile("/layers.aseprite");
+
+        Layer topLevelGroup = file.layers().children().get(1);
         assertThat(topLevelGroup.children().size()).isEqualTo(1);
+
         Layer nestedGroup = topLevelGroup.children().get(0);
         assertThat(nestedGroup.name()).isEqualTo("nested-group");
         assertThat(nestedGroup.visible()).isEqualTo(true);
         assertThat(nestedGroup.readonly()).isEqualTo(false);
         assertThat(nestedGroup.group()).isEqualTo(true);
-        assertThat(nestedGroup.children().size()).isEqualTo(2);
-        Layer layer2inGroup = nestedGroup.children().get(0);
-        assertThat(layer2inGroup.name()).isEqualTo("layer-2-in-group");
-        assertThat(layer2inGroup.visible()).isEqualTo(true);
-        assertThat(layer2inGroup.readonly()).isEqualTo(false);
-        assertThat(layer2inGroup.group()).isEqualTo(false);
-        Layer layer1inGroup = nestedGroup.children().get(1);
-        assertThat(layer1inGroup.name()).isEqualTo("layer-1-in-group");
-        assertThat(layer1inGroup.visible()).isEqualTo(true);
-        assertThat(layer1inGroup.readonly()).isEqualTo(false);
-        assertThat(layer1inGroup.group()).isEqualTo(false);
-        Layer hiddenLayer = children.get(2);
-        assertThat(hiddenLayer.name()).isEqualTo("hidden-layer");
-        assertThat(hiddenLayer.visible()).isEqualTo(false);
-        assertThat(hiddenLayer.readonly()).isEqualTo(false);
-        Layer topLayer = children.get(3);
-        assertThat(topLayer.name()).isEqualTo("top-layer");
-        assertThat(topLayer.visible()).isEqualTo(true);
-        assertThat(topLayer.readonly()).isEqualTo(false);
-    }
 
+        assertThat(nestedGroup.children())
+                .extracting(Layer::name)
+                .containsExactly("layer-2-in-group", "layer-1-in-group");
+        assertThat(nestedGroup.children())
+                .extracting(Layer::visible)
+                .containsOnly(true);
+        assertThat(nestedGroup.children())
+                .extracting(Layer::group)
+                .containsOnly(false);
+        assertThat(nestedGroup.children())
+                .extracting(Layer::readonly)
+                .containsOnly(false);
+    }
 
 }
