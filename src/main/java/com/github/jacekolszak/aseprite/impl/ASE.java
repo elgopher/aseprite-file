@@ -65,7 +65,8 @@ public final class ASE {
     private String string(int index) {
         int length = stringLength(index);
         byte[] dst = new byte[length];
-        buffer.get(dst, index, length);
+        buffer.position(index + 2); // ???
+        buffer.get(dst, 0, length);
         try {
             return new String(dst, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -211,6 +212,10 @@ public final class ASE {
                 return new PaletteChunk(offset + 6);
             }
 
+            LayerChunk layer() {
+                return new LayerChunk(offset + 6);
+            }
+
             class PaletteChunk {
 
                 private final int offset;
@@ -289,6 +294,50 @@ public final class ASE {
 
                 }
 
+            }
+
+            class LayerChunk {
+                private final int offset;
+
+                LayerChunk(int offset) {
+                    this.offset = offset;
+                }
+
+                int flags() {
+                    return word(offset);
+                }
+
+                boolean visible() {
+                    return (flags() & 1) == 1;
+                }
+
+                int type() {
+                    return word(offset + 2);
+                }
+
+                boolean imageLayer() {
+                    return type() == 0;
+                }
+
+                boolean groupLayer() {
+                    return type() == 1;
+                }
+
+                int childLevel() {
+                    return word(offset + 4);
+                }
+
+                int blendMode() {
+                    return word(offset + 10);
+                }
+
+                int opacity() {
+                    return word(offset + 12);
+                }
+
+                String name() {
+                    return string(offset + 16);
+                }
             }
         }
     }

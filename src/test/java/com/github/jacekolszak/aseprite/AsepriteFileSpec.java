@@ -20,6 +20,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import java.io.File;
 import java.net.URL;
 import java.time.Duration;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -99,11 +100,15 @@ final class AsepriteFileSpec {
         assertThat(frame.duration()).isEqualTo(Duration.ofMillis(100));
     }
 
-    private AsepriteFile asepriteFile() {
-        URL url = AsepriteFileSpec.class.getResource("/file.aseprite");
+    private AsepriteFile asepriteFile(String name) {
+        URL url = AsepriteFileSpec.class.getResource(name);
         AsepriteFile file = factory.asepriteFile(url);
         file.load();
         return file;
+    }
+
+    private AsepriteFile asepriteFile() {
+        return asepriteFile("/file.aseprite");
     }
 
     @Test
@@ -134,5 +139,24 @@ final class AsepriteFileSpec {
         assertThat(color31.blue()).isEqualTo(48);
         assertThat(color31.alpha()).isEqualTo(174);
     }
+
+
+    @Test
+    void should_return_layers_on_top_level() {
+        AsepriteFile file = asepriteFile("/layers.aseprite");
+        Layers layers = file.layers();
+        assertThat(layers).isNotNull();
+        List<Layer> children = layers.children();
+        Layer topLayer = children.get(2);
+        assertThat(topLayer.name()).isEqualTo("top-layer");
+        assertThat(topLayer.visible()).isEqualTo(true);
+        Layer hiddenLayer = children.get(1);
+        assertThat(hiddenLayer.name()).isEqualTo("hidden-layer");
+        assertThat(hiddenLayer.visible()).isEqualTo(false);
+        Layer bottomLayer = children.get(0);
+        assertThat(bottomLayer.name()).isEqualTo("bottom-layer");
+        assertThat(bottomLayer.visible()).isEqualTo(true);
+    }
+
 
 }

@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 
 import com.github.jacekolszak.aseprite.impl.ASE;
 import com.github.jacekolszak.aseprite.impl.FramesImpl;
+import com.github.jacekolszak.aseprite.impl.LayersImpl;
 import com.github.jacekolszak.aseprite.impl.PaletteImpl;
 import com.github.jacekolszak.aseprite.impl.SpriteImpl;
 
@@ -58,4 +59,7 @@ final class AsepriteFile {
         return new PaletteImpl(ase);
     }
 
+    public Layers layers() {
+        return new LayersImpl(ase);
+    }
 }
