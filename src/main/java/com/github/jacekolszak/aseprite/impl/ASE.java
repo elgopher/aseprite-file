@@ -244,7 +244,7 @@ public final class ASE {
                     for (int i = 0; i < totalNumberOfEntries(); i++) {
                         PaletteEntry entry = new PaletteEntry(currentOffset);
                         entries.add(entry);
-                        currentOffset += entry.length();
+                        currentOffset += entry.size();
                     }
                     return entries;
                 }
@@ -285,12 +285,12 @@ public final class ASE {
                         return string(offset + 6);
                     }
 
-                    int length() {
-                        int length = 6;
+                    int size() {
+                        int size = 6;
                         if (hasName()) {
-                            return length + 2 + stringLength(offset + 6);
+                            return size + 2 + stringLength(offset + 6);
                         } else {
-                            return length;
+                            return size;
                         }
                     }
 
