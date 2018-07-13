@@ -21,16 +21,16 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ASE {
+final class ASE {
 
     private static final int FIRST_FRAME_OFFSET = 128;
     private final ByteBuffer buffer;
 
-    public ASE(byte[] bytes) {
+    ASE(byte[] bytes) {
         this.buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
     }
 
-    public Header header() {
+    Header header() {
         return new Header();
     }
 
@@ -85,9 +85,9 @@ public final class ASE {
         return Byte.toUnsignedInt(buffer.get(index));
     }
 
-    public class Header {
+    class Header {
 
-        public long fileSize() {
+        long fileSize() {
             return dword(0);
         }
 

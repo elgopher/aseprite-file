@@ -23,12 +23,12 @@ import com.github.jacekolszak.aseprite.Palette;
 import com.github.jacekolszak.aseprite.impl.ASE.Frame.Chunk;
 import com.github.jacekolszak.aseprite.impl.ASE.Frame.Chunk.PaletteChunk.PaletteEntry;
 
-public final class PaletteImpl implements Palette {
+final class PaletteImpl implements Palette {
 
     private final Colors colors;
     private final int transparentColorIndex;
 
-    public PaletteImpl(ASE ase) {
+    PaletteImpl(ASE ase) {
         ASE.Frame frame = ase.frame(1); // TODO all those palette chunks are in the first frame only?
         colors = frame.chunks()
                 .stream()

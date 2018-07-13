@@ -19,11 +19,11 @@ import com.github.jacekolszak.aseprite.ColorMode;
 import com.github.jacekolszak.aseprite.Size;
 import com.github.jacekolszak.aseprite.Sprite;
 
-public final class SpriteImpl implements Sprite {
+final class SpriteImpl implements Sprite {
 
     private final ASE.Header header;
 
-    public SpriteImpl(ASE.Header header) {
+    SpriteImpl(ASE.Header header) {
         this.header = header;
     }
 

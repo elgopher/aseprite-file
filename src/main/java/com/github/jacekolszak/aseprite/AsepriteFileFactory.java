@@ -22,10 +22,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.github.jacekolszak.aseprite.impl.AsepriteFileImpl;
+
 public final class AsepriteFileFactory {
 
     public AsepriteFile asepriteFile(URL url) {
-        return new AsepriteFile(() -> {
+        return new AsepriteFileImpl(() -> {
             try {
                 InputStream inputStream = url.openStream();
                 return inputStream.readAllBytes();
@@ -36,7 +38,7 @@ public final class AsepriteFileFactory {
     }
 
     public AsepriteFile asepriteFile(File file) {
-        return new AsepriteFile(() -> {
+        return new AsepriteFileImpl(() -> {
             try {
                 Path path = file.toPath();
                 return Files.readAllBytes(path);
@@ -48,7 +50,7 @@ public final class AsepriteFileFactory {
     }
 
     public AsepriteFile asepriteFile(byte[] bytes) {
-        return new AsepriteFile(() -> bytes);
+        return new AsepriteFileImpl(() -> bytes);
     }
 
 }

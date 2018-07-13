@@ -18,11 +18,11 @@ package com.github.jacekolszak.aseprite.impl;
 import com.github.jacekolszak.aseprite.Frame;
 import com.github.jacekolszak.aseprite.Frames;
 
-public final class FramesImpl implements Frames {
+final class FramesImpl implements Frames {
 
     private final ASE ase;
 
-    public FramesImpl(ASE ase) {
+    FramesImpl(ASE ase) {
         this.ase = ase;
     }
 

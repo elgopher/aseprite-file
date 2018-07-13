@@ -8,11 +8,11 @@ import com.github.jacekolszak.aseprite.impl.ASE.Frame;
 import com.github.jacekolszak.aseprite.impl.ASE.Frame.Chunk;
 import com.github.jacekolszak.aseprite.impl.ASE.Frame.Chunk.LayerChunk;
 
-public class LayersImpl implements Layers {
+class LayersImpl implements Layers {
 
     private final Layers layers;
 
-    public LayersImpl(ASE ase) {
+    LayersImpl(ASE ase) {
         Frame frame = ase.frame(1);// TODO Only first frame contains layer chunks?
         layers = frame.chunks()
                 .stream()
