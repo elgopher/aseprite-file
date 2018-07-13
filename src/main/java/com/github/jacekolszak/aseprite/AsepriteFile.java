@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import com.github.jacekolszak.aseprite.impl.ASE;
 import com.github.jacekolszak.aseprite.impl.FramesImpl;
+import com.github.jacekolszak.aseprite.impl.PaletteImpl;
 import com.github.jacekolszak.aseprite.impl.SpriteImpl;
 
 final class AsepriteFile {
@@ -37,4 +38,9 @@ final class AsepriteFile {
     public Frames frames() {
         return new FramesImpl(ase);
     }
+
+    public Palette palette() {
+        return new PaletteImpl(ase);
+    }
+
 }

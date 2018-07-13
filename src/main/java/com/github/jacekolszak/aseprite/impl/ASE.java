@@ -1,7 +1,10 @@
 package com.github.jacekolszak.aseprite.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class ASE {
 
@@ -37,6 +40,26 @@ public final class ASE {
      */
     private int word(int index) {
         return Short.toUnsignedInt(buffer.getShort(index));
+    }
+
+    /**
+     * STRING:
+     * WORD: string length (number of bytes)
+     * BYTE[length]: characters (in UTF-8) The '\0' character is not included.
+     */
+    private String string(int index) {
+        int length = stringLength(index);
+        byte[] dst = new byte[length];
+        buffer.get(dst, index, length);
+        try {
+            return new String(dst, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Problem decoding string in ASE file", e);
+        }
+    }
+
+    private int stringLength(int index) {
+        return word(index);
     }
 
     /**
@@ -114,6 +137,152 @@ public final class ASE {
             return word(offset + 8);
         }
 
+        List<Chunk> chunks() {
+            List<Chunk> chunks = new ArrayList<>(numberOfChunks());
+            int currentOffset = this.offset + 16;
+            for (int i = 0; i < numberOfChunks(); i++) {
+                Chunk chunk = new Chunk(currentOffset);
+                chunks.add(chunk);
+                currentOffset += chunk.size();
+            }
+            return chunks;
+        }
+
+        class Chunk {
+
+            private final int offset;
+
+            Chunk(int offset) {
+                this.offset = offset;
+            }
+
+            long size() {
+                return dword(offset);
+            }
+
+            int type() {
+                return word(offset + 4);
+            }
+
+            boolean isLayer() {
+                return type() == 0x2004;
+            }
+
+            boolean isCel() {
+                return type() == 0x2005;
+            }
+
+            boolean isCellExtra() {
+                return type() == 0x2006;
+            }
+
+            boolean isFrameTags() {
+                return type() == 0x2018;
+            }
+
+            boolean isPalette() {
+                return type() == 0x2019;
+            }
+
+            boolean isUserData() {
+                return type() == 0x2020;
+            }
+
+            boolean isSlice() {
+                return type() == 0x2022;
+            }
+
+            byte[] data() {
+                int size = (int) size();
+                byte[] bytes = new byte[size];
+                buffer.get(bytes, 6, size);
+                return bytes;
+            }
+
+            PaletteChunk palette() {
+                return new PaletteChunk(offset + 6);
+            }
+
+            class PaletteChunk {
+
+                private final int offset;
+
+                PaletteChunk(int offset) {
+                    this.offset = offset;
+                }
+
+                long totalNumberOfEntries() {
+                    return dword(offset);
+                }
+
+                long firstColorIndexToChange() {
+                    return dword(offset + 4);
+                }
+
+                long lastColorIndexToChange() {
+                    return dword(offset + 8);
+                }
+
+                List<PaletteEntry> entries() {
+                    List<PaletteEntry> entries = new ArrayList<>();
+                    int currentOffset = offset + 20;
+                    for (int i = 0; i < totalNumberOfEntries(); i++) {
+                        PaletteEntry entry = new PaletteEntry(currentOffset);
+                        entries.add(entry);
+                        currentOffset += entry.length();
+                    }
+                    return entries;
+                }
+
+                class PaletteEntry {
+
+                    private final int offset;
+
+                    PaletteEntry(int offset) {
+                        this.offset = offset;
+                    }
+
+                    int flags() {
+                        return word(offset);
+                    }
+
+                    boolean hasName() {
+                        return (flags() & 1) == 1;
+                    }
+
+                    int red() {
+                        return byte_(offset + 2);
+                    }
+
+                    int green() {
+                        return byte_(offset + 3);
+                    }
+
+                    int blue() {
+                        return byte_(offset + 4);
+                    }
+
+                    int alpha() {
+                        return byte_(offset + 5);
+                    }
+
+                    String name() {
+                        return string(offset + 6);
+                    }
+
+                    int length() {
+                        int length = 6;
+                        if (hasName()) {
+                            return length + 2 + stringLength(offset + 6);
+                        } else {
+                            return length;
+                        }
+                    }
+
+                }
+
+            }
+        }
     }
 
 }

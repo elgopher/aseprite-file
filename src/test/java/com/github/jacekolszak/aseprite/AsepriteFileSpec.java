@@ -69,9 +69,7 @@ final class AsepriteFileSpec {
 
     @Test
     void should_return_frames() {
-        URL url = AsepriteFileSpec.class.getResource("/file.aseprite");
-        AsepriteFile file = factory.asepriteFile(url);
-        file.load();
+        AsepriteFile file = asepriteFile();
         Frames frames = file.frames();
         assertThat(frames).isNotNull();
         assertThat(frames.count()).isEqualTo(1);
@@ -79,14 +77,48 @@ final class AsepriteFileSpec {
 
     @Test
     void should_return_first_frame() {
-        URL url = AsepriteFileSpec.class.getResource("/file.aseprite");
-        AsepriteFile file = factory.asepriteFile(url);
-        file.load();
+        AsepriteFile file = asepriteFile();
         Frames frames = file.frames();
         Frame frame = frames.frame(1);
         assertThat(frame).isNotNull();
         assertThat(frame.duration()).isEqualTo(Duration.ofMillis(100));
     }
+
+    private AsepriteFile asepriteFile() {
+        URL url = AsepriteFileSpec.class.getResource("/file.aseprite");
+        AsepriteFile file = factory.asepriteFile(url);
+        file.load();
+        return file;
+    }
+
+    @Test
+    void should_return_palette() {
+        AsepriteFile file = asepriteFile();
+        Palette palette = file.palette();
+        assertThat(palette).isNotNull();
+        assertThat(palette.numberOfColors()).isEqualTo(32);
+    }
+
+    @Test
+    void should_return_palette_colors() {
+        AsepriteFile file = asepriteFile();
+        Palette palette = file.palette();
+
+        Color color0 = palette.at(0);
+        assertThat(color0).isNotNull();
+        assertThat(color0.red()).isEqualTo(0);
+        assertThat(color0.green()).isEqualTo(0);
+        assertThat(color0.blue()).isEqualTo(0);
+        assertThat(color0.alpha()).isEqualTo(255);
+
+        Color color31 = palette.at(31);
+        assertThat(color31).isNotNull();
+        assertThat(color31.red()).isEqualTo(138);
+        assertThat(color31.green()).isEqualTo(111);
+        assertThat(color31.blue()).isEqualTo(48);
+        assertThat(color31.alpha()).isEqualTo(174);
+    }
+
 
 
 }
