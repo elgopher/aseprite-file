@@ -13,13 +13,15 @@ class LayerImpl implements Layer {
     private final boolean group;
     private final String name;
     private final List<LayerImpl> children;
+    private final int opacity;
 
-    LayerImpl(boolean visible, boolean readonly, boolean group, String name) {
+    LayerImpl(boolean visible, boolean readonly, boolean group, int opacity, String name) {
         this.visible = visible;
         this.readonly = readonly;
         this.group = group;
         this.name = name;
         this.children = new ArrayList<>();
+        this.opacity = opacity;
     }
 
     @Override
@@ -40,6 +42,11 @@ class LayerImpl implements Layer {
     @Override
     public boolean group() {
         return group;
+    }
+
+    @Override
+    public int opacity() {
+        return opacity;
     }
 
     void addChild(LayerImpl layer, int level) {

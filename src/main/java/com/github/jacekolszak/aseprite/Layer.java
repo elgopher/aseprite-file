@@ -14,4 +14,6 @@ public interface Layer {
 
     List<Layer> children();
 
+    int opacity();
+
 }

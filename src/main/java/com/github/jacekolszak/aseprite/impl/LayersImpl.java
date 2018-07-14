@@ -28,10 +28,10 @@ class LayersImpl implements Layers {
 
     static class Layers {
 
-        private LayerImpl topLayer = new LayerImpl(false, false, false, "main");
+        private LayerImpl topLayer = new LayerImpl(false, false, false, 0, "main");
 
         void merge(LayerChunk chunk) {
-            LayerImpl layer = new LayerImpl(chunk.visible(), !chunk.editable(), chunk.groupLayer(), chunk.name());
+            LayerImpl layer = new LayerImpl(chunk.visible(), !chunk.editable(), chunk.groupLayer(), chunk.opacity(), chunk.name());
             topLayer.addChild(layer, chunk.childLevel());
         }
 

@@ -151,6 +151,9 @@ final class AsepriteFileSpec {
         assertThat(children)
                 .extracting(Layer::readonly)
                 .containsExactly(true, false, false, false);
+        assertThat(children)
+                .extracting(Layer::opacity)
+                .containsExactly(255, 0, 255, 167);
 
     }
 
@@ -179,6 +182,9 @@ final class AsepriteFileSpec {
         assertThat(nestedGroup.children())
                 .extracting(Layer::readonly)
                 .containsOnly(false);
+        assertThat(nestedGroup.children())
+                .extracting(Layer::opacity)
+                .containsOnly(255);
     }
 
 }
