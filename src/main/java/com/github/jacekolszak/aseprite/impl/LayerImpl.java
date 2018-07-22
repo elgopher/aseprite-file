@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.github.jacekolszak.aseprite.BlendMode;
 import com.github.jacekolszak.aseprite.Layer;
 
 class LayerImpl implements Layer {
@@ -14,14 +15,16 @@ class LayerImpl implements Layer {
     private final String name;
     private final List<LayerImpl> children;
     private final int opacity;
+    private final BlendMode mode;
 
-    LayerImpl(boolean visible, boolean readonly, boolean group, int opacity, String name) {
+    LayerImpl(boolean visible, boolean readonly, boolean group, int opacity, BlendMode mode, String name) {
         this.visible = visible;
         this.readonly = readonly;
         this.group = group;
         this.name = name;
         this.children = new ArrayList<>();
         this.opacity = opacity;
+        this.mode = mode;
     }
 
     @Override
@@ -47,6 +50,11 @@ class LayerImpl implements Layer {
     @Override
     public int opacity() {
         return opacity;
+    }
+
+    @Override
+    public BlendMode mode() {
+        return mode;
     }
 
     void addChild(LayerImpl layer, int level) {

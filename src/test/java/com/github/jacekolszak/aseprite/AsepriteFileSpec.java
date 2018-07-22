@@ -15,6 +15,8 @@
  */
 package com.github.jacekolszak.aseprite;
 
+import static com.github.jacekolszak.aseprite.BlendMode.DIFFERENCE;
+import static com.github.jacekolszak.aseprite.BlendMode.NORMAL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
@@ -154,7 +156,9 @@ final class AsepriteFileSpec {
         assertThat(children)
                 .extracting(Layer::opacity)
                 .containsExactly(255, 0, 255, 167);
-
+        assertThat(children)
+                .extracting(Layer::mode)
+                .containsExactly(NORMAL, NORMAL, NORMAL, DIFFERENCE);
     }
 
     @Test
@@ -185,6 +189,9 @@ final class AsepriteFileSpec {
         assertThat(nestedGroup.children())
                 .extracting(Layer::opacity)
                 .containsOnly(255);
+        assertThat(nestedGroup.children())
+                .extracting(Layer::mode)
+                .containsOnly(NORMAL);
     }
 
 }

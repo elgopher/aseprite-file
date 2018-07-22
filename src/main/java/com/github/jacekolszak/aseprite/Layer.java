@@ -16,4 +16,6 @@ public interface Layer {
 
     int opacity();
 
+    BlendMode mode();
+
 }
