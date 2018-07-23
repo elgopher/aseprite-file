@@ -1,8 +1,6 @@
 package com.github.jacekolszak.aseprite;
 
-import java.util.List;
-
-public interface Layer {
+public interface Layer extends Parent {
 
     String name();
 
@@ -11,8 +9,6 @@ public interface Layer {
     boolean readonly();
 
     boolean group();
-
-    List<Layer> children();
 
     int opacity();
 

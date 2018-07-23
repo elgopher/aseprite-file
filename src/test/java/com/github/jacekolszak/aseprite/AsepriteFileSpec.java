@@ -195,4 +195,20 @@ final class AsepriteFileSpec {
                 .containsOnly(NORMAL);
     }
 
+    @Test
+    void should_return_layer_with_name() {
+        AsepriteFile file = asepriteFile("/layers.aseprite");
+        Layer bottomLayer = file.layers().withName("bottom-layer");
+        assertThat(bottomLayer.name()).isEqualTo("bottom-layer");
+    }
+
+    @Test
+    void should_return_layer_with_name_from_another_layer() {
+        AsepriteFile file = asepriteFile("/layers.aseprite");
+        Layer layer = file.layers()
+                .withName("top-level-group")
+                .withName("nested-group");
+        assertThat(layer.name()).isEqualTo("nested-group");
+    }
+
 }
