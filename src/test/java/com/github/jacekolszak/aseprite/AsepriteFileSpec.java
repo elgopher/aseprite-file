@@ -15,6 +15,7 @@
  */
 package com.github.jacekolszak.aseprite;
 
+import static com.github.jacekolszak.aseprite.BlendMode.COLOR_BURN;
 import static com.github.jacekolszak.aseprite.BlendMode.DIFFERENCE;
 import static com.github.jacekolszak.aseprite.BlendMode.NORMAL;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -158,7 +159,7 @@ final class AsepriteFileSpec {
                 .containsExactly(255, 0, 255, 167);
         assertThat(children)
                 .extracting(Layer::mode)
-                .containsExactly(NORMAL, NORMAL, NORMAL, DIFFERENCE);
+                .containsExactly(COLOR_BURN, NORMAL, NORMAL, DIFFERENCE);
     }
 
     @Test
