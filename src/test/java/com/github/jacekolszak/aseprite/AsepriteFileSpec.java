@@ -211,4 +211,12 @@ final class AsepriteFileSpec {
         assertThat(layer.name()).isEqualTo("nested-group");
     }
 
+    @Test
+    void should_return_cell() {
+        AsepriteFile file = asepriteFile();
+        Layer layer = file.layers().children().get(0);
+        Cell cell = layer.cell(1);
+        assertThat(cell).isNotNull();
+    }
+
 }

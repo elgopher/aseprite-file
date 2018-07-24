@@ -14,4 +14,6 @@ public interface Layer extends Parent {
 
     BlendMode mode();
 
+    Cell cell(int frame);
+
 }

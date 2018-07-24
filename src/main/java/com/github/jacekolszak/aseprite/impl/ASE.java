@@ -216,6 +216,8 @@ final class ASE {
                 return new LayerChunk(offset + 6);
             }
 
+            CellChunk cell() { return new CellChunk(offset + 6); }
+
             class PaletteChunk {
 
                 private final int offset;
@@ -342,6 +344,16 @@ final class ASE {
                 String name() {
                     return string(offset + 16);
                 }
+            }
+
+            class CellChunk {
+
+                private final int offset;
+
+                CellChunk(int offset) {
+                    this.offset = offset;
+                }
+
             }
         }
     }
