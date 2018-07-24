@@ -188,7 +188,7 @@ final class ASE {
                 return type() == 0x2005;
             }
 
-            boolean isCellExtra() {
+            boolean isCelExtra() {
                 return type() == 0x2006;
             }
 
@@ -216,7 +216,7 @@ final class ASE {
                 return new LayerChunk(offset + 6);
             }
 
-            CellChunk cell() { return new CellChunk(offset + 6); }
+            CelChunk cel() { return new CelChunk(offset + 6); }
 
             class PaletteChunk {
 
@@ -346,11 +346,11 @@ final class ASE {
                 }
             }
 
-            class CellChunk {
+            class CelChunk {
 
                 private final int offset;
 
-                CellChunk(int offset) {
+                CelChunk(int offset) {
                     this.offset = offset;
                 }
 

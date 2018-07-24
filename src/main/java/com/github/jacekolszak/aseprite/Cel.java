@@ -1,5 +1,5 @@
 package com.github.jacekolszak.aseprite;
 
-public interface Cell {
+public interface Cel {
 
 }

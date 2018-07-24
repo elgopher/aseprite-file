@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.github.jacekolszak.aseprite.BlendMode;
-import com.github.jacekolszak.aseprite.Cell;
+import com.github.jacekolszak.aseprite.Cel;
 import com.github.jacekolszak.aseprite.Layer;
 
 class LayerImpl implements Layer {
@@ -77,7 +77,7 @@ class LayerImpl implements Layer {
     }
 
     @Override
-    public Cell cell(int frame) {
+    public Cel cel(int frame) {
         return null;
     }
 }
