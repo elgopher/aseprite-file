@@ -1,3 +1,18 @@
+/*
+ * Copyright 2018 Aseprite File Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.jacekolszak.aseprite.impl;
 
 import static com.github.jacekolszak.aseprite.BlendMode.ADDITION;
@@ -25,17 +40,16 @@ import java.util.List;
 import com.github.jacekolszak.aseprite.BlendMode;
 import com.github.jacekolszak.aseprite.Layer;
 import com.github.jacekolszak.aseprite.Layers;
-import com.github.jacekolszak.aseprite.impl.ASE.Frame;
 import com.github.jacekolszak.aseprite.impl.ASE.Frame.Chunk;
 import com.github.jacekolszak.aseprite.impl.ASE.Frame.Chunk.LayerChunk;
 
-class LayersImpl implements Layers {
+final class LayersImpl implements Layers {
 
     private final Layers layers;
 
     LayersImpl(ASE ase) {
-        Frame frame = ase.frame(1);// TODO Only first frame contains layer chunks?
-        layers = frame.chunks()
+        ASE.Frame firstFrame = ase.frame(1); // TODO all those palette chunks are in the first frame only?
+        layers = firstFrame.chunks()
                 .stream()
                 .filter(Chunk::isLayer)
                 .map(Chunk::layer)

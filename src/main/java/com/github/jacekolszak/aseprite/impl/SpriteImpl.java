@@ -21,21 +21,25 @@ import com.github.jacekolszak.aseprite.Sprite;
 
 final class SpriteImpl implements Sprite {
 
-    private final ASE.Header header;
+    private final Size size;
+    private final ColorMode colorMode;
 
-    SpriteImpl(ASE.Header header) {
-        this.header = header;
+    SpriteImpl(ASE ase) {
+        ASE.Header header = ase.header();
+        this.size = new SizeImpl(header.width(), header.height());
+        this.colorMode = ColorMode.from(header.colorDepth())
+                .orElseThrow(
+                        () -> new RuntimeException("Not supported color mode of " + header.colorDepth() + " bits per pixel"));
     }
 
     @Override
     public Size size() {
-        return new SizeImpl(header.width(), header.height());
+        return size;
     }
 
     @Override
     public ColorMode colorMode() {
-        return ColorMode.from(header.colorDepth())
-                .orElseThrow(
-                        () -> new RuntimeException("Not supported color mode of " + header.colorDepth() + " bits per pixel"));
+        return colorMode;
     }
+
 }

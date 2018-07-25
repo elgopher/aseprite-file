@@ -15,24 +15,33 @@
  */
 package com.github.jacekolszak.aseprite.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.jacekolszak.aseprite.Frame;
 import com.github.jacekolszak.aseprite.Frames;
 
 final class FramesImpl implements Frames {
 
-    private final ASE ase;
+    private final int count;
+    private final List<Frame> frames = new ArrayList<>();
 
     FramesImpl(ASE ase) {
-        this.ase = ase;
+        ASE.Header header = ase.header();
+        count = header.frames();
+        for (int i = 1; i <= header.frames(); i++) {
+            ASE.Frame frame = ase.frame(i);
+            frames.add(new FrameImpl(frame));
+        }
     }
 
     @Override
     public int count() {
-        return ase.header().frames();
+        return count;
     }
 
     @Override
     public Frame frame(int number) {
-        return new FrameImpl(ase.frame(number));
+        return frames.get(number - 1);
     }
 }

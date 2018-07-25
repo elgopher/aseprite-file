@@ -19,16 +19,17 @@ import java.time.Duration;
 
 import com.github.jacekolszak.aseprite.Frame;
 
-final class FrameImpl implements Frame {
+public final class FrameImpl implements Frame {
 
-    private final ASE.Frame frame;
+    private final Duration duration;
 
     FrameImpl(ASE.Frame frame) {
-        this.frame = frame;
+        this.duration = Duration.ofMillis(frame.duration());
+        // TODO iterate over cel chunks and collect all the information
     }
 
     @Override
     public Duration duration() {
-        return Duration.ofMillis(frame.duration());
+        return duration;
     }
 }

@@ -85,6 +85,13 @@ final class ASE {
         return Byte.toUnsignedInt(buffer.get(index));
     }
 
+    /**
+     * SHORT: A 16-bit signed integer value
+     */
+    private int short_(int index) {
+        return buffer.getShort(index);
+    }
+
     class Header {
 
         long fileSize() {
@@ -216,7 +223,9 @@ final class ASE {
                 return new LayerChunk(offset + 6);
             }
 
-            CelChunk cel() { return new CelChunk(offset + 6); }
+            CelChunk cel() {
+                return new CelChunk(offset + 6);
+            }
 
             class PaletteChunk {
 
@@ -299,6 +308,7 @@ final class ASE {
             }
 
             class LayerChunk {
+
                 private final int offset;
 
                 LayerChunk(int offset) {
@@ -354,6 +364,46 @@ final class ASE {
                     this.offset = offset;
                 }
 
+                int layerIndex() {
+                    return word(offset);
+                }
+
+                int xPosition() {
+                    return short_(offset + 2);
+                }
+
+                int yPosition() {
+                    return short_(offset + 4);
+                }
+
+                int opacityLevel() {
+                    return byte_(offset + 6);
+                }
+
+                int celType() {
+                    return word(offset + 7);
+                }
+
+                int width() {
+                    return word(offset + 16);
+                }
+
+                int height() {
+                    return word(offset + 18);
+                }
+
+//                BYTE[7]     For future (set to zero)
+//+ For cel type = 0 (Raw Cel)
+//                WORD      Width in pixels
+//                WORD      Height in pixels
+//                PIXEL[]   Raw pixel data: row by row from top to bottom,
+//                        for each scanline read pixels from left to right.
+//                        + For cel type = 1 (Linked Cel)
+//                WORD      Frame position to link with
+//+ For cel type = 2 (Compressed Image)
+//                WORD      Width in pixels
+//                WORD      Height in pixels
+//                BYTE[]    "Raw Cel" data compressed with ZLIB method
             }
         }
     }

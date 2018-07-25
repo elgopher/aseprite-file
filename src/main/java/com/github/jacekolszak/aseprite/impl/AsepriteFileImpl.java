@@ -26,8 +26,13 @@ import com.github.jacekolszak.aseprite.Sprite;
 public final class AsepriteFileImpl implements AsepriteFile {
 
     private final Supplier<byte[]> loader;
+
     private boolean loaded;
-    private ASE ase;
+    private Layers layers;
+    private Palette palette;
+    private Frames frames;
+    private Sprite sprite;
+    private long fileSize;
 
     public AsepriteFileImpl(Supplier<byte[]> loader) {
         this.loader = loader;
@@ -35,9 +40,13 @@ public final class AsepriteFileImpl implements AsepriteFile {
 
     @Override
     public void load() {
-        byte[] bytes = loader.get();
-        this.ase = new ASE(bytes);
-        this.loaded = true;
+        ASE ase = new ASE(loader.get());
+        layers = new LayersImpl(ase);
+        palette = new PaletteImpl(ase);
+        frames = new FramesImpl(ase);
+        sprite = new SpriteImpl(ase);
+        fileSize = ase.header().fileSize();
+        loaded = true;
     }
 
     @Override
@@ -47,26 +56,27 @@ public final class AsepriteFileImpl implements AsepriteFile {
 
     @Override
     public Sprite sprite() {
-        return new SpriteImpl(ase.header());
+        return sprite;
     }
 
     @Override
     public long fileSize() {
-        return ase.header().fileSize();
+        return fileSize;
     }
 
     @Override
     public Frames frames() {
-        return new FramesImpl(ase);
+        return frames;
     }
 
     @Override
     public Palette palette() {
-        return new PaletteImpl(ase);
+        return palette;
     }
 
     @Override
     public Layers layers() {
-        return new LayersImpl(ase);
+        return layers;
     }
+
 }
