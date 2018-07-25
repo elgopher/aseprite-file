@@ -212,11 +212,22 @@ final class AsepriteFileSpec {
     }
 
     @Test
-    void should_return_cel() {
+    void should_return_cel_from_layer() {
         AsepriteFile file = asepriteFile();
         Layer layer = file.layers().children().get(0);
         Cel cel = layer.cel(1);
         assertThat(cel).isNotNull();
     }
+
+
+    @Test
+    void should_return_cel_from_frame() {
+        AsepriteFile file = asepriteFile();
+        Frame frame = file.frames().frame(1);
+        Layer layer = file.layers().withName("main");
+        Cel cel = frame.cel(layer);
+        assertThat(cel).isNotNull();
+    }
+
 
 }

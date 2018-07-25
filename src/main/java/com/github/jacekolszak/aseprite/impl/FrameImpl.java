@@ -17,7 +17,9 @@ package com.github.jacekolszak.aseprite.impl;
 
 import java.time.Duration;
 
+import com.github.jacekolszak.aseprite.Cel;
 import com.github.jacekolszak.aseprite.Frame;
+import com.github.jacekolszak.aseprite.Layer;
 
 public final class FrameImpl implements Frame {
 
@@ -32,4 +34,10 @@ public final class FrameImpl implements Frame {
     public Duration duration() {
         return duration;
     }
+
+    @Override
+    public Cel cel(Layer layer) {
+        return null;
+    }
+
 }

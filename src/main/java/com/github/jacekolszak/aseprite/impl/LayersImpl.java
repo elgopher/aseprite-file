@@ -48,7 +48,7 @@ final class LayersImpl implements Layers {
     private final Layers layers;
 
     LayersImpl(ASE ase) {
-        ASE.Frame firstFrame = ase.frame(1); // TODO all those palette chunks are in the first frame only?
+        ASE.Frame firstFrame = ase.frame(1);
         layers = firstFrame.chunks()
                 .stream()
                 .filter(Chunk::isLayer)

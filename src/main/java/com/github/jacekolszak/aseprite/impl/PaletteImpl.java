@@ -29,7 +29,7 @@ final class PaletteImpl implements Palette {
     private final int transparentColorIndex;
 
     PaletteImpl(ASE ase) {
-        ASE.Frame frame = ase.frame(1); // TODO all those palette chunks are in the first frame only?
+        ASE.Frame frame = ase.frame(1);
         colors = frame.chunks()
                 .stream()
                 .filter(Chunk::isPalette)

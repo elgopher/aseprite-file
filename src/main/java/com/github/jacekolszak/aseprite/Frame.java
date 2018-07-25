@@ -21,4 +21,6 @@ public interface Frame {
 
     Duration duration();
 
+    Cel cel(Layer layer);
+
 }
