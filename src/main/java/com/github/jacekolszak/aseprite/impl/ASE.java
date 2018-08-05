@@ -20,6 +20,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 final class ASE {
 
@@ -358,7 +360,7 @@ final class ASE {
 
             class CelChunk {
 
-                private final int offset;
+                protected final int offset;
 
                 CelChunk(int offset) {
                     this.offset = offset;
@@ -384,6 +386,38 @@ final class ASE {
                     return word(offset + 7);
                 }
 
+                boolean isRawCel() {
+                    return celType() == 0;
+                }
+
+                RawCelChunk rawCel() {
+                    return new RawCelChunk(offset);
+                }
+
+                boolean isLinkedCel() {
+                    return celType() == 1;
+                }
+
+                LinkedCelChunk linkedCel() {
+                    return new LinkedCelChunk(offset);
+                }
+
+                boolean isCompressedImage() {
+                    return celType() == 2;
+                }
+
+                CompressedImageChunk compressedImage() {
+                    return new CompressedImageChunk(offset);
+                }
+
+            }
+
+            class RawCelChunk extends CelChunk {
+
+                RawCelChunk(int offset) {
+                    super(offset);
+                }
+
                 int width() {
                     return word(offset + 16);
                 }
@@ -392,18 +426,50 @@ final class ASE {
                     return word(offset + 18);
                 }
 
-//                BYTE[7]     For future (set to zero)
-//+ For cel type = 0 (Raw Cel)
-//                WORD      Width in pixels
-//                WORD      Height in pixels
-//                PIXEL[]   Raw pixel data: row by row from top to bottom,
-//                        for each scanline read pixels from left to right.
-//                        + For cel type = 1 (Linked Cel)
-//                WORD      Frame position to link with
-//+ For cel type = 2 (Compressed Image)
-//                WORD      Width in pixels
-//                WORD      Height in pixels
-//                BYTE[]    "Raw Cel" data compressed with ZLIB method
+            }
+
+            class LinkedCelChunk extends CelChunk {
+
+                LinkedCelChunk(int offset) {
+                    super(offset);
+                }
+
+                int framePosition() {
+                    return word(offset + 16);
+                }
+
+            }
+
+            class CompressedImageChunk extends CelChunk {
+
+                CompressedImageChunk(int offset) {
+                    super(offset);
+                }
+
+                int width() {
+                    return word(offset + 16);
+                }
+
+                int height() {
+                    return word(offset + 18);
+                }
+
+                byte[] decompressedData() {
+                    Inflater inflater = new Inflater();
+                    int bytesPerPixel = header().colorDepth() / 8;
+                    int bytesLength = width() * height() * bytesPerPixel;
+                    buffer.position(offset + 20);
+                    byte[] compressed = new byte[Math.min(bytesLength, buffer.remaining())];
+                    buffer.get(compressed);
+                    inflater.setInput(compressed);
+                    byte[] results = new byte[bytesLength];
+                    try {
+                        inflater.inflate(results);
+                        return results;
+                    } catch (DataFormatException e) {
+                        throw new RuntimeException("Problem decompressing ZLIB data ", e);
+                    }
+                }
             }
         }
     }

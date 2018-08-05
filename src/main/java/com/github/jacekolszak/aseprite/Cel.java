@@ -17,4 +17,6 @@ package com.github.jacekolszak.aseprite;
 
 public interface Cel {
 
+    Pixel pixel(int x, int y);
+
 }

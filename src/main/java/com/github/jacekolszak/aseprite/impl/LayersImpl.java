@@ -35,52 +35,39 @@ import static com.github.jacekolszak.aseprite.BlendMode.SCREEN;
 import static com.github.jacekolszak.aseprite.BlendMode.SOFT_LIGHT;
 import static com.github.jacekolszak.aseprite.BlendMode.SUBTRACT;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.github.jacekolszak.aseprite.BlendMode;
+import com.github.jacekolszak.aseprite.Cel;
 import com.github.jacekolszak.aseprite.Layer;
 import com.github.jacekolszak.aseprite.Layers;
 import com.github.jacekolszak.aseprite.impl.ASE.Frame.Chunk;
+import com.github.jacekolszak.aseprite.impl.ASE.Frame.Chunk.CelChunk;
 import com.github.jacekolszak.aseprite.impl.ASE.Frame.Chunk.LayerChunk;
 
 final class LayersImpl implements Layers {
 
-    private final Layers layers;
+    private final Layers layers = new Layers();
+    private final CelFactory celFactory;
 
-    LayersImpl(ASE ase) {
-        ASE.Frame firstFrame = ase.frame(1);
-        layers = firstFrame.chunks()
-                .stream()
-                .filter(Chunk::isLayer)
-                .map(Chunk::layer)
-                .collect(Layers::new, Layers::merge, Layers::merge);
+    LayersImpl(ASE ase, CelFactory celFactory) {
+        this.celFactory = celFactory;
+        for (int i = 1; i <= ase.header().frames(); i++) {
+            ASE.Frame frame = ase.frame(i);
+            for (Chunk chunk : frame.chunks()) {
+                if (chunk.isLayer()) {
+                    layers.merge(chunk.layer());
+                } else if (chunk.isCel()) {
+                    layers.merge(i, chunk.cel());
+                }
+            }
+        }
     }
 
     @Override
     public List<Layer> children() {
         return layers.children();
-    }
-
-    static class Layers {
-
-        private LayerImpl topLayer = new LayerImpl(false, false, false, 0, NORMAL, "main");
-        private BlendModes blendModes = new BlendModes();
-
-        void merge(LayerChunk chunk) {
-            LayerImpl layer = new LayerImpl(chunk.visible(), !chunk.editable(), chunk.groupLayer(), chunk.opacity(),
-                    blendModes.blendMode(chunk.blendMode()), chunk.name());
-            topLayer.addChild(layer, chunk.childLevel());
-        }
-
-        void merge(Layers layers) {
-            topLayer._children()
-                    .forEach(layer -> layers.topLayer.addChild(layer, 0));
-        }
-
-        List<Layer> children() {
-            return topLayer.children();
-        }
-
     }
 
     static class BlendModes {
@@ -95,6 +82,36 @@ final class LayersImpl implements Layers {
         BlendMode blendMode(int blendMode) {
             return blendModes[blendMode];
         }
+    }
+
+    private class Layers {
+
+        private LayerImpl topLayer = new LayerImpl(false, false, false, 0, NORMAL, "main");
+        private List<LayerImpl> layersByIndex = new ArrayList<>();
+        private BlendModes blendModes = new BlendModes();
+
+        void merge(LayerChunk chunk) {
+            LayerImpl layer = new LayerImpl(chunk.visible(), !chunk.editable(), chunk.groupLayer(), chunk.opacity(),
+                    blendModes.blendMode(chunk.blendMode()), chunk.name());
+            topLayer.addChild(layer, chunk.childLevel());
+            layersByIndex.add(layer);
+        }
+
+        void merge(int frame, CelChunk chunk) {
+            if (chunk.isCompressedImage()) {
+                Chunk.CompressedImageChunk compressedImageChunk = chunk.compressedImage();
+                Cel cel = celFactory.create(chunk.xPosition(), chunk.yPosition(), compressedImageChunk.width(),
+                        compressedImageChunk.height(), compressedImageChunk.decompressedData());
+                chunk.layerIndex();
+                layersByIndex.get(chunk.layerIndex()).addCel(frame, cel);
+                topLayer.addCel(frame, cel);
+            }
+        }
+
+        List<Layer> children() {
+            return topLayer.children();
+        }
+
     }
 
 }

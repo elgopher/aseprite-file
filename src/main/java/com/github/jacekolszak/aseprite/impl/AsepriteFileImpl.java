@@ -15,6 +15,8 @@
  */
 package com.github.jacekolszak.aseprite.impl;
 
+import static com.github.jacekolszak.aseprite.impl.CelFactory.newCelFactory;
+
 import java.util.function.Supplier;
 
 import com.github.jacekolszak.aseprite.AsepriteFile;
@@ -41,10 +43,10 @@ public final class AsepriteFileImpl implements AsepriteFile {
     @Override
     public void load() {
         ASE ase = new ASE(loader.get());
-        layers = new LayersImpl(ase);
         palette = new PaletteImpl(ase);
         frames = new FramesImpl(ase);
         sprite = new SpriteImpl(ase);
+        layers = new LayersImpl(ase, newCelFactory(sprite.colorMode(), palette));
         fileSize = ase.header().fileSize();
         loaded = true;
     }

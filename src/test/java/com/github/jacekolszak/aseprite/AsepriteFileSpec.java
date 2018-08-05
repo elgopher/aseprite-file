@@ -219,15 +219,36 @@ final class AsepriteFileSpec {
         assertThat(cel).isNotNull();
     }
 
-
     @Test
-    void should_return_cel_from_frame() {
-        AsepriteFile file = asepriteFile();
-        Frame frame = file.frames().frame(1);
-        Layer layer = file.layers().withName("main");
-        Cel cel = frame.cel(layer);
-        assertThat(cel).isNotNull();
+    void should_return_pixel_from_index_palette() {
+        AsepriteFile file = asepriteFile("/indexed.aseprite");
+        Layer layer = file.layers().children().get(0);
+        Cel cel = layer.cel(1);
+        Pixel pixel = cel.pixel(4,1);
+        assertThat(pixel.index()).isEqualTo(8);
+        assertThat(pixel.x()).isEqualTo(4);
+        assertThat(pixel.y()).isEqualTo(1);
+        Color color = pixel.color();
+        assertThat(color.red()).isEqualTo(251);
+        assertThat(color.green()).isEqualTo(242);
+        assertThat(color.blue()).isEqualTo(54);
+        assertThat(color.alpha()).isEqualTo(198);
     }
 
+    @Test
+    void should_return_pixel_from_rgba_palette() {
+        AsepriteFile file = asepriteFile("/rgba.aseprite");
+        Layer layer = file.layers().children().get(0);
+        Cel cel = layer.cel(1);
+        Pixel pixel = cel.pixel(4,1);
+        assertThat(pixel.index()).isEqualTo(-1);
+        assertThat(pixel.x()).isEqualTo(4);
+        assertThat(pixel.y()).isEqualTo(1);
+        Color color = pixel.color();
+        assertThat(color.red()).isEqualTo(251);
+        assertThat(color.green()).isEqualTo(242);
+        assertThat(color.blue()).isEqualTo(54);
+        assertThat(color.alpha()).isEqualTo(198);
+    }
 
 }

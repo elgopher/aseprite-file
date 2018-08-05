@@ -17,7 +17,9 @@ package com.github.jacekolszak.aseprite.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.github.jacekolszak.aseprite.BlendMode;
 import com.github.jacekolszak.aseprite.Cel;
@@ -30,6 +32,7 @@ final class LayerImpl implements Layer {
     private final boolean group;
     private final String name;
     private final List<LayerImpl> children;
+    private final Map<Integer, Cel> cels = new HashMap();
     private final int opacity;
     private final BlendMode mode;
 
@@ -82,6 +85,10 @@ final class LayerImpl implements Layer {
         }
     }
 
+    void addCel(int frame, Cel cel) {
+        this.cels.put(frame, cel);
+    }
+
     @Override
     public List<Layer> children() {
         return Collections.unmodifiableList(children);
@@ -93,6 +100,7 @@ final class LayerImpl implements Layer {
 
     @Override
     public Cel cel(int frame) {
-        return null;
+        return cels.get(frame);
     }
+
 }
