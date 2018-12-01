@@ -13,3 +13,4 @@ Load Aseprite files directly in Java. No need to export spritesheets. Access fro
 
 https://github.com/aseprite/aseprite/blob/master/docs/ase-file-specs.md
 
+# Aseprite bin file format
